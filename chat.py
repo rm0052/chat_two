@@ -35,7 +35,7 @@ def summarize_articles(links):
     for url in links:
         response = client.get(url, params={"render_js": "true"})
         context += " " + response.text[:500]  # Extract first 500 chars per article
-        if len(context) >= 8000:
+        if len(context) >= 2000:
             break  # Stop after 2000 chars
 
     # Summarize using Gemini
