@@ -12,11 +12,12 @@ GENAI_API_KEY = "AIzaSyDFbnYmLQ1Q55jIYYmgQ83sxledB_MgTbw"
 # Function to scrape Bloomberg headlines
 def scrape_bloomberg():
     client = ScrapingBeeClient(api_key=SCRAPINGBEE_API_KEY)
-    response = client.get(
-        ["https://bloomberg.com/markets",'https://finance.yahoo.com/topic/latest-news/'],
-        params={"ai_query": "Extract all article headlines and their links — show links as absolute urls"}
-    )
-    return response.text
+    urls = [ "https://bloomberg.com/markets", "https://finance.yahoo.com/topic/latest-news/" ] 
+    articles="" 
+    for url in urls: 
+        response = client.get( url, params={"ai_query": "Extract all article headlines and their links — show links as absolute urls"} ) 
+        articles+=" " + response.text # Check the response
+    return articles
 
 # Function to extract article links using Gemini
 def extract_links(response_text):
