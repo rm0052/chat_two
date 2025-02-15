@@ -13,7 +13,7 @@ GENAI_API_KEY = "AIzaSyDFbnYmLQ1Q55jIYYmgQ83sxledB_MgTbw"
 def scrape_bloomberg():
     client = ScrapingBeeClient(api_key=SCRAPINGBEE_API_KEY)
     response = client.get(
-        "https://bloomberg.com/markets",
+        "https://bloomberg.com/markets",'https://finance.yahoo.com/topic/latest-news/',
         params={"ai_query": "Extract all article headlines and their links — show links as absolute urls"}
     )
     return response.text
@@ -60,7 +60,7 @@ if st.button("Get Answer") and question:
 
     # Step 3: Summarize Articles
     context = summarize_articles(links)
-    final_prompt = f"Answer the question: {question}. Context: {context}"
+    final_prompt = f"Answer the question and if the information in the context does not have news then ignore it: {question}. Context: {context}"
     client = genai.Client(api_key=GENAI_API_KEY)
     final_response = client.models.generate_content(
             model="gemini-1.5-flash", contents=final_prompt
