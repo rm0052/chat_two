@@ -61,6 +61,7 @@ if st.button("Get Answer") and question:
     # Step 3: Summarize Articles
     context = summarize_articles(links)
     final_prompt = f"Answer the question: {question}. Context: {context}"
+    client = genai.Client(api_key=GENAI_API_KEY)
     final_response = client.models.generate_content(
             model="gemini-1.5-flash", contents=final_prompt
         )
