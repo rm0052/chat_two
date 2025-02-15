@@ -13,7 +13,7 @@ GENAI_API_KEY = "AIzaSyDFbnYmLQ1Q55jIYYmgQ83sxledB_MgTbw"
 def scrape_bloomberg():
     client = ScrapingBeeClient(api_key=SCRAPINGBEE_API_KEY)
     response = client.get(
-        "https://bloomberg.com/markets",'https://finance.yahoo.com/topic/latest-news/',
+        ["https://bloomberg.com/markets",'https://finance.yahoo.com/topic/latest-news/'],
         params={"ai_query": "Extract all article headlines and their links — show links as absolute urls"}
     )
     return response.text
