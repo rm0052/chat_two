@@ -36,17 +36,16 @@ def summarize_articles(links):
         response = client.get(url, params={"render_js": "true"})
         context += " " + response.text[:500]  # Extract first 500 chars per article
         if len(context) >= 2000:
-            break  # Stop after 2000 chars
-
-    # Summarize using Gemini
-    genai_client = genai.Client(api_key=GENAI_API_KEY)
-    prompt = f"Summarize the following information: {context}"
-    response = genai_client.models.generate_content(model="gemini-1.5-flash", contents=prompt)
-    
-    return response.text.strip()
+            break  # Stop after 2000 chars            
+    return context
 
 # Streamlit Button to Start Process
-if st.button("Summarize Bloomberg Market News"):
+
+# User Input: Question
+question = st.text_input("Enter your question")
+
+# Search Button
+if st.button("Get Answer") and question:
     st.write("🔍 Fetching article headlines...")
 
     # Step 1: Get Bloomberg Articles
@@ -60,8 +59,11 @@ if st.button("Summarize Bloomberg Market News"):
     st.write(f"🔗 {len(links)} articles found. Fetching content...")
 
     # Step 3: Summarize Articles
-    summary = summarize_articles(links)
+    context = summarize_articles(links)
+    final_prompt = f"Answer the question: {question}. Context: {context}"
+    final_response = client.models.generate_content(
+            model="gemini-1.5-flash", contents=final_prompt
+        )
+
+    st.write(final_response.text.replace("$", "\\$").replace("provided text", "available information"))
     
-    # Display Summary
-    st.subheader("📝 Summary:")
-    st.write(summary)
