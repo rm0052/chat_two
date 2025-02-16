@@ -57,7 +57,7 @@ if st.button("Get Answer") and question:
 
     # Step 2: Extract Links
     links = extract_links(articles_text)
-    
+    print(links)
     st.write(f"🔗 {len(links)} articles found. Fetching content...")
 
     # Step 3: Summarize Articles
