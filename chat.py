@@ -63,7 +63,7 @@ if st.button("Fetch News"):
     scrape_bloomberg()
     # extract_links(st.session_state["news_articles"])
     # st.write(f"✅ {len(st.session_state['news_links'])} articles found.")
-
+    st.write("Articles found.")
 # User Input: Question
 question = st.text_input("Enter your question")
 
