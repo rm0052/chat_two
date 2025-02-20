@@ -77,7 +77,7 @@ if st.button("Get Answer") and question:
         links=st.session_state["news_links"]
         # context = summarize_articles(st.session_state["news_links"])
         # final_prompt = f"Answer the question and if the information in the context does not have news then ignore it: {question}. Context: {context}"
-        final_prompt=f'''Here are the links of news articles that have been published in the past few hours. Each article has a headline, the time it was published and the article itself. Based on the articles, users will ask questions like "which companies have appeared in the past hour?" or "summarize the news" Question: {question} Respond with the links that are useful: {links}'''
+        final_prompt=f'''Here are the links of news articles that have been published in the past few hours. Each article has a headline, the time it was published and the article itself. Question: {question} Respond with the links that are useful: {links}'''
         # Generate response with Gemini
         client = genai.Client(api_key=GENAI_API_KEY)
         final_response = client.models.generate_content(
