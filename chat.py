@@ -34,9 +34,9 @@ def scrape_bloomberg():
 
 
 # Function to extract article links using Gemini
-def extract_links(response_text):
+def extract_links(response_text,question):
     client = genai.Client(api_key=GENAI_API_KEY)
-    prompt = f"Extract the links from the following text: {response_text}"
+    prompt = f"Here are the links of news articles that have been published in the past few hours. Each article has a headline, the time it was oublished and the article itself. Based on the articles, users will ask questions like "Which companies have appeared in the past hour?" or "Summarize the news?" {question} Extract the links that are useful: {response_text}"
 
     response = client.models.generate_content(model="gemini-1.5-flash", contents=prompt)
     links = response.text.strip().split("\n")[1:-1]  # Remove first & last empty lines
@@ -61,8 +61,8 @@ def summarize_articles(links):
 if st.button("Fetch News"):
     st.write("🔍 Fetching latest news articles...")
     scrape_bloomberg()
-    extract_links(st.session_state["news_articles"])
-    st.write(f"✅ {len(st.session_state['news_links'])} articles found.")
+    # extract_links(st.session_state["news_articles"])
+    # st.write(f"✅ {len(st.session_state['news_links'])} articles found.")
 
 # User Input: Question
 question = st.text_input("Enter your question")
@@ -73,15 +73,15 @@ if st.button("Get Answer") and question:
         st.write("⚠️ No articles found. Click 'Fetch News' first.")
     else:
         st.write("🔗 Fetching content from saved news articles...")
-
+        response=extract_links(st.session_state["news_links"],question)
         # Summarize articles
-        context = summarize_articles(st.session_state["news_links"])
-        final_prompt = f"Answer the question and if the information in the context does not have news then ignore it: {question}. Context: {context}"
+        # context = summarize_articles(st.session_state["news_links"])
+        # final_prompt = f"Answer the question and if the information in the context does not have news then ignore it: {question}. Context: {context}"
 
-        # Generate response with Gemini
-        client = genai.Client(api_key=GENAI_API_KEY)
-        final_response = client.models.generate_content(
-            model="gemini-1.5-flash", contents=final_prompt
-        )
+        # # Generate response with Gemini
+        # client = genai.Client(api_key=GENAI_API_KEY)
+        # final_response = client.models.generate_content(
+        #     model="gemini-1.5-flash", contents=final_prompt
+        # )
 
-        st.write(final_response.text.replace("$", "\\$").replace("provided text", "available information"))
+        st.write(response.replace("$", "\\$").replace("provided text", "available information"))
