@@ -83,5 +83,5 @@ if st.button("Get Answer") and question:
         # final_response = client.models.generate_content(
         #     model="gemini-1.5-flash", contents=final_prompt
         # )
-        st.write(st.session_state["news_links"]
+        st.write(st.session_state["news_links"])
         # st.write(st.session_state["news_links"].replace("$", "\\$").replace("provided text", "available information"))
