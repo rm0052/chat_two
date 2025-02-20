@@ -69,11 +69,11 @@ question = st.text_input("Enter your question")
 
 # Get Answer Button
 if st.button("Get Answer") and question:
-    if not st.session_state["news_links"]:
+    if not st.session_state["news_articles"]:
         st.write("⚠️ No articles found. Click 'Fetch News' first.")
     else:
         st.write("🔗 Fetching content from saved news articles...")
-        response=extract_links(st.session_state["news_links"],question)
+        extract_links(st.session_state["news_articles"],question)
         # Summarize articles
         # context = summarize_articles(st.session_state["news_links"])
         # final_prompt = f"Answer the question and if the information in the context does not have news then ignore it: {question}. Context: {context}"
@@ -84,4 +84,4 @@ if st.button("Get Answer") and question:
         #     model="gemini-1.5-flash", contents=final_prompt
         # )
 
-        st.write(response.replace("$", "\\$").replace("provided text", "available information"))
+        st.write(st.session_state["news_links"].replace("$", "\\$").replace("provided text", "available information"))
