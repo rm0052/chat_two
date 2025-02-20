@@ -36,7 +36,7 @@ def scrape_bloomberg():
 # Function to extract article links using Gemini
 def extract_links(response_text,question):
     client = genai.Client(api_key=GENAI_API_KEY)
-    prompt = f"Here are the links of news articles that have been published in the past few hours. Each article has a headline, the time it was published and the article itself. Based on the articles, users will ask questions like "which companies have appeared in the past hour?" or "summarize the news?" Question: {question} Extract the links that are useful: {response_text}"
+    prompt = f'''Here are the links of news articles that have been published in the past few hours. Each article has a headline, the time it was published and the article itself. Based on the articles, users will ask questions like "which companies have appeared in the past hour?" or "summarize the news?" Question: {question} Extract the links that are useful: {response_text}'''
 
     response = client.models.generate_content(model="gemini-1.5-flash", contents=prompt)
     links = response.text.strip().split("\n")[1:-1]  # Remove first & last empty lines
