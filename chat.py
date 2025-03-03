@@ -79,7 +79,17 @@ if st.button("Get Answer") and question:
         st.write("🔗 Fetching content from saved news articles...")
 
         links = st.session_state["news_links"]
-        final_prompt = f'''Here are the links of news articles that have been published in the past few hours. Each article has a headline, the date/time it was published, and the article itself. The date appears right after the headline in the format 'day, date at time'. Use current time and date, for example, today is February 20th at 11:07 AM. Question: {question} Respond with the links that are useful: {links}'''
+        prompt = f"Answer only yes or no if the question requires specific information from the articles links. Question: {question} links: {links}."
+        response = client.models.generate_content(
+            model="gemini-1.5-flash", contents=prompt
+        )
+        answer = response.text.strip()
+
+        # Follow-up Question
+        if answer.lower() == "yes":
+            final_prompt = f"Respond with the article text of the link that the question is referring to. Question: {question} links: {links}"
+        else:
+            final_prompt = f'''Here are the links of news articles that have been published in the past few hours. Each article has a headline, the date/time it was published, and the article itself. The date appears right after the headline in the format 'day, date at time'. Use current time and date, for example, today is February 20th at 11:07 AM. Question: {question} Respond with the links that are useful: {links}'''
 
         # Generate response with Gemini
         client = genai.Client(api_key=GENAI_API_KEY)
