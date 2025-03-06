@@ -69,8 +69,10 @@ if st.button("Fetch News"):
     st.write(f"✅ {len(st.session_state['news_links'])} articles found.")
 
 # User Input: Question
-question = st.text_input("Enter your question")
+if "questions" not in st.session_state:
+    st.session_state["questions"] = []
 
+question = st.text_area("Enter your question", height=100)
 # Get Answer Button
 if st.button("Get Answer") and question:
     if not st.session_state["news_links"]:
@@ -98,3 +100,7 @@ if st.button("Get Answer") and question:
         )
 
         st.write(final_response.text.replace("$", "\\$").replace("provided text", "available information"))
+
+st.write("### Previous Questions")
+for q in st.session_state["questions"]:
+    st.write(f"- {q}")
