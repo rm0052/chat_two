@@ -69,8 +69,8 @@ if st.button("Fetch News"):
     st.write(f"✅ {len(st.session_state['news_links'])} articles found.")
 
 # User Input: Question
-if "questions" not in st.session_state:
-    st.session_state["questions"] = []
+if "chat_history" not in st.session_state:
+    st.session_state["chat_history"] = []
 
 question = st.text_area("Enter your question", height=100)
 # Get Answer Button
@@ -101,6 +101,11 @@ if st.button("Get Answer") and question:
 
         st.write(final_response.text.replace("$", "\\$").replace("provided text", "available information"))
 
-st.write("### Previous Questions")
-for q in st.session_state["questions"]:
-    st.write(f"- {q}")
+        st.session_state["chat_history"].append((question, response_text))
+
+st.write("## Chat History")
+for q, r in st.session_state["chat_history"]:
+    with st.chat_message("user"):
+        st.write(q)
+    with st.chat_message("assistant"):
+        st.write(r)
