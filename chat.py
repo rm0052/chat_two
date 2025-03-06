@@ -81,6 +81,7 @@ if st.button("Get Answer") and question:
         st.write("🔗 Fetching content from saved news articles...")
 
         links = st.session_state["news_links"]
+        client = genai.Client(api_key=GENAI_API_KEY)
         prompt = f"Answer only yes or no if the question requires specific information from the articles links. Question: {question} links: {links}."
         response = client.models.generate_content(
             model="gemini-1.5-flash", contents=prompt
