@@ -104,5 +104,5 @@ if st.button("Get Answer") and question:
         final_response = client.models.generate_content(
             model="gemini-1.5-flash", contents=final_prompt
         )
-        st.session_state["chat_history"].append((question, final_response.text))
+        st.session_state["chat_history"].append((question, final_response.text.replace("$", "\\$").replace("provided text", "available information")))
         st.rerun()
