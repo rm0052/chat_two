@@ -77,9 +77,9 @@ for q, r in st.session_state["chat_history"]:
         st.write(q)
     with st.chat_message("assistant"):
         st.write(r)
-question = st.text_area("Enter your question", height=100)
+question = st.chat_input("Type your question and press Enter...")
 # Get Answer Button
-if st.button("Get Answer") and question:
+if question:
     if not st.session_state["news_links"]:
         st.write("⚠️ No articles found. Click 'Fetch News' first.")
     else:
