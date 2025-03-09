@@ -12,7 +12,7 @@ st.title("Test Chatbot")
 SCRAPINGBEE_API_KEY = "U3URPLPZWZ3QHVGEEP5HTXJ95873G9L58RJ3EHS4WSYTXOZAIE71L278CF589042BBMKNXZTRY23VYPF"
 GENAI_API_KEY = "AIzaSyDFbnYmLQ1Q55jIYYmgQ83sxledB_MgTbw"
 
-DATA_FILE = "news_data.json"  # File to store news data
+DATA_FILE = "news_data2.json"  # File to store news data
 
 # Generate or retrieve a session ID
 if "session_id" not in st.session_state:
