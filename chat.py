@@ -3,6 +3,7 @@ import json
 from scrapingbee import ScrapingBeeClient
 from google import genai
 import os
+import uuid
 
 # Streamlit App Title
 st.title("Test Chatbot")
@@ -13,6 +14,12 @@ GENAI_API_KEY = "AIzaSyDFbnYmLQ1Q55jIYYmgQ83sxledB_MgTbw"
 
 DATA_FILE = "news_data.json"  # File to store news data
 
+# Generate or retrieve a session ID
+if "session_id" not in st.session_state:
+    st.session_state["session_id"] = str(uuid.uuid4())  # Unique session ID
+
+session_id = st.session_state["session_id"]
+
 # Function to load stored news data
 def load_news_data():
     if os.path.exists(DATA_FILE):
@@ -20,19 +27,22 @@ def load_news_data():
             try:
                 return json.load(f)
             except json.JSONDecodeError:
-                return {"news_articles": "", "news_links": []}
-    return {"news_articles": "", "news_links": []}
+                return {}
+    return {}
 
 # Function to save news data
-def save_news_data(news_articles, news_links):
+def save_news_data(news_data):
     with open(DATA_FILE, "w") as f:
-        json.dump({"news_articles": news_articles, "news_links": news_links}, f)
+        json.dump(news_data, f)
 
 # Load data into session state at startup
-if "news_articles" not in st.session_state or "news_links" not in st.session_state:
-    saved_data = load_news_data()
-    st.session_state["news_articles"] = saved_data["news_articles"]
-    st.session_state["news_links"] = saved_data["news_links"]
+news_data = load_news_data()
+if session_id not in news_data:
+    news_data[session_id] = {"news_articles": "", "news_links": [], "chat_history": []}
+
+st.session_state["news_articles"] = news_data[session_id]["news_articles"]
+st.session_state["news_links"] = news_data[session_id]["news_links"]
+st.session_state["chat_history"] = news_data[session_id]["chat_history"]
 
 # Function to scrape Bloomberg headlines
 def scrape_bloomberg():
@@ -48,7 +58,8 @@ def scrape_bloomberg():
         articles += " " + response.text  # Store raw response
 
     st.session_state["news_articles"] = articles
-    save_news_data(articles, st.session_state["news_links"])
+    news_data[session_id]["news_articles"] = articles
+    save_news_data(news_data)
 
 # Function to extract article links using Gemini
 def extract_links(response_text):
@@ -59,7 +70,8 @@ def extract_links(response_text):
     links = response.text.strip().split("\n")[1:-1]  # Remove first & last empty lines
 
     st.session_state["news_links"] = links
-    save_news_data(st.session_state["news_articles"], links)
+    news_data[session_id]["news_links"] = links
+    save_news_data(news_data)
 
 # Fetch News Button
 if st.button("Fetch News"):
@@ -68,16 +80,17 @@ if st.button("Fetch News"):
     extract_links(st.session_state["news_articles"])
     st.write(f"✅ {len(st.session_state['news_links'])} articles found.")
 
-# User Input: Question
-if "chat_history" not in st.session_state:
-    st.session_state["chat_history"] = []
+# Display Chat History
 st.write("## Chat History")
 for q, r in st.session_state["chat_history"]:
     with st.chat_message("user"):
         st.write(q)
     with st.chat_message("assistant"):
         st.write(r)
+
+# User Input: Question
 question = st.chat_input("Type your question and press Enter...")
+
 # Get Answer Button
 if question:
     if not st.session_state["news_links"]:
@@ -100,9 +113,13 @@ if question:
             final_prompt = f'''Here are the links of news articles that have been published in the past few hours. Each article has a headline, the date/time it was published, and the article itself. The date appears right after the headline in the format 'day, date at time'. Use current time and date, for example, today is February 20th at 11:07 AM. Question: {question} Respond with the links that are useful: {links}'''
 
         # Generate response with Gemini
-        client = genai.Client(api_key=GENAI_API_KEY)
         final_response = client.models.generate_content(
             model="gemini-1.5-flash", contents=final_prompt
         )
+
+        # Update session state and save chat history
         st.session_state["chat_history"].append((question, final_response.text.replace("$", "\\$").replace("provided text", "available information")))
+        news_data[session_id]["chat_history"] = st.session_state["chat_history"]
+        save_news_data(news_data)
+
         st.rerun()
