@@ -88,7 +88,6 @@ def auto_fetch_news():
             break
         else:
             retries += 1
-            st.write(f"⚠️ No articles found. Retrying... ({retries}/{max_retries})")
             time.sleep(2)  # Short delay before retry
 
     if not st.session_state["news_links"]:
