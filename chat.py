@@ -4,6 +4,7 @@ from scrapingbee import ScrapingBeeClient
 from google import genai
 import os
 import uuid
+import time
 
 # Streamlit App Title
 st.title("Test Chatbot")
@@ -74,12 +75,29 @@ def extract_links(response_text):
     news_data[session_id]["news_links"] = links
     save_news_data(news_data)
 
-# 🚀 Fetch news automatically on app load (only once per session)
+# 🚀 Fetch news automatically on app load (with retry if no links found)
+def auto_fetch_news():
+    max_retries = 3
+    retries = 0
+    while retries < max_retries:
+        scrape_bloomberg()
+        extract_links(st.session_state["news_articles"])
+        
+        if st.session_state["news_links"]:
+            st.write(f"✅ {len(st.session_state['news_links'])} articles found.")
+            break
+        else:
+            retries += 1
+            st.write(f"⚠️ No articles found. Retrying... ({retries}/{max_retries})")
+            time.sleep(2)  # Short delay before retry
+
+    if not st.session_state["news_links"]:
+        st.write("❌ Failed to fetch news after multiple attempts.")
+
+# ✅ Auto-fetch news on app load (only once per session)
 if "run_once" not in st.session_state:
-    scrape_bloomberg()
-    extract_links(st.session_state["news_articles"])
+    auto_fetch_news()
     st.session_state["run_once"] = True
-    st.write(f"✅ {len(st.session_state['news_links'])} articles found.")
 
 # Display Chat History
 st.write("## Chat History")
@@ -92,11 +110,13 @@ for q, r in st.session_state["chat_history"]:
 # User Input: Question
 question = st.chat_input("Type your question and press Enter...")
 
-# Get Answer Button
+# ✅ If no links are available during Q&A, auto-fetch news again
 if question:
     if not st.session_state["news_links"]:
-        st.write("⚠️ No articles found. Click 'Fetch News' first.")
-    else:
+        st.write("⚠️ No articles found. Fetching news again...")
+        auto_fetch_news()
+
+    if st.session_state["news_links"]:
         st.write("🔗 Fetching content from saved news articles...")
 
         links = st.session_state["news_links"]
