@@ -46,6 +46,7 @@ st.session_state["chat_history"] = news_data[session_id]["chat_history"]
 
 # Function to scrape Bloomberg headlines
 def scrape_bloomberg():
+    st.write("🔍 Fetching latest news articles...")
     client = ScrapingBeeClient(api_key=SCRAPINGBEE_API_KEY)
     urls = ["https://finance.yahoo.com/topic/latest-news/"]
     articles = ""
@@ -73,11 +74,11 @@ def extract_links(response_text):
     news_data[session_id]["news_links"] = links
     save_news_data(news_data)
 
-# Fetch News Button
-if st.button("Fetch News"):
-    st.write("🔍 Fetching latest news articles...")
+# 🚀 Fetch news automatically on app load (only once per session)
+if "run_once" not in st.session_state:
     scrape_bloomberg()
     extract_links(st.session_state["news_articles"])
+    st.session_state["run_once"] = True
     st.write(f"✅ {len(st.session_state['news_links'])} articles found.")
 
 # Display Chat History
@@ -108,7 +109,6 @@ if question:
 
         # Follow-up Question
         if answer.lower() == "yes":
-            # final_prompt = f"Respond with the article text of the link that the question is referring to. Question: {question} links: {links}"
             final_prompt = f"Each link represents a news article. Respond with the summary of the article text of the link that the question is referring to. Question: {question} links: {links}"
         else:
             final_prompt = f'''Here are the links of news articles that have been published in the past few hours. Each article has a headline, the date/time it was published, and the article itself. The date appears right after the headline in the format 'day, date at time'. Use current time and date, for example, today is February 20th at 11:07 AM. Question: {question} Respond with the links that are useful: {links}'''
