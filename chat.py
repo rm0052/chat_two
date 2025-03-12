@@ -74,7 +74,7 @@ def extract_links(response_text):
     save_news_data(news_data)
 
 # Fetch News Button
-if st.button("Fetch News"):
+if st.button("Fetch latest news"):
     st.write("🔍 Fetching latest news articles...")
     scrape_bloomberg()
     extract_links(st.session_state["news_articles"])
