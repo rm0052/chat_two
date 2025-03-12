@@ -7,7 +7,7 @@ import uuid
 import time
 
 # Streamlit App Title
-st.title("Test Chatbot")
+st.title("News Chatbot")
 
 # API Keys
 SCRAPINGBEE_API_KEY = "U3URPLPZWZ3QHVGEEP5HTXJ95873G9L58RJ3EHS4WSYTXOZAIE71L278CF589042BBMKNXZTRY23VYPF"
