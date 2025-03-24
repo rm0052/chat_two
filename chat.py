@@ -66,7 +66,7 @@ def extract_links(response_text):
     client = genai.Client(api_key=GENAI_API_KEY)
     prompt = f"Extract the links from the following text: {response_text}"
 
-    response = client.models.generate_content(model="gemini-1.5-flash", contents=prompt)
+    response = client.models.generate_content(model="gemini-2.0-flash", contents=prompt)
     links = response.text.strip().split("\n")[1:-1]  # Remove first & last empty lines
 
     st.session_state["news_links"] = links
@@ -102,7 +102,7 @@ if question:
         client = genai.Client(api_key=GENAI_API_KEY)
         prompt = f"Answer only yes or no if the question requires specific information from the articles links. Question: {question} links: {links}."
         response = client.models.generate_content(
-            model="gemini-1.5-flash", contents=prompt
+            model="gemini-2.0-flash", contents=prompt
         )
         answer = response.text.strip()
 
@@ -115,7 +115,7 @@ if question:
 
         # Generate response with Gemini
         final_response = client.models.generate_content(
-            model="gemini-1.5-flash", contents=final_prompt
+            model="gemini-2.0-flash", contents=final_prompt
         )
 
         # Update session state and save chat history
