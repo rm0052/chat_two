@@ -1,2 +1,3 @@
 scrapingbee
 google-genai
+streamlit-js-eval
