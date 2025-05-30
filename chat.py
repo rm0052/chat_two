@@ -20,6 +20,19 @@ if "session_id" not in st.session_state:
 
 session_id = st.session_state["session_id"]
 
+if "email_captured" not in st.session_state:
+    st.session_state.email_captured = False
+
+if not st.session_state.email_captured:
+    email = st.text_input("Enter your email to start chatting:")
+
+    if email and "@" in email and "." in email:
+        st.session_state.email_captured = True
+        st.success("Thanks! You're ready to chat.")
+        # Save email like above
+    else:
+        st.stop()  # Block the chatbot until email is entered
+
 # Function to load stored news data
 def load_news_data():
     if os.path.exists(DATA_FILE):
