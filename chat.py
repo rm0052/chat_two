@@ -20,18 +20,41 @@ if "session_id" not in st.session_state:
 
 session_id = st.session_state["session_id"]
 
-if "email_captured" not in st.session_state:
-    st.session_state.email_captured = False
+import streamlit as st
+import os
 
-if not st.session_state.email_captured:
-    email = st.text_input("Enter your email to start chatting:")
+EMAIL_FILE = "emails.txt"
+
+def is_email_in_file(email):
+    """Check if the email already exists in the file."""
+    if not os.path.exists(EMAIL_FILE):
+        return False
+    with open(EMAIL_FILE, "r") as f:
+        emails = f.read().splitlines()
+    return email in emails
+
+def save_email(email):
+    """Save the email to the file."""
+    with open(EMAIL_FILE, "a") as f:
+        f.write(email + "\n")
+
+# Only ask for email if not already captured
+if "email_verified" not in st.session_state:
+    st.session_state.email_verified = False
+
+if not st.session_state.email_verified:
+    st.title("🔐 Please enter your email to start chatting")
+    email = st.text_input("Enter your email:")
 
     if email and "@" in email and "." in email:
-        st.session_state.email_captured = True
-        st.success("Thanks! You're ready to chat.")
-        # Save email like above
+        if is_email_in_file(email):
+            st.success("✅ Welcome back! You're ready to chat.")
+        else:
+            save_email(email)
+            st.success("✅ Thanks for signing up! You're ready to chat.")
+        st.session_state.email_verified = True
     else:
-        st.stop()  # Block the chatbot until email is entered
+        st.stop()  # Don't continue until valid email is provided
 
 # Function to load stored news data
 def load_news_data():
