@@ -4,7 +4,7 @@ from scrapingbee import ScrapingBeeClient
 from google import genai
 import os
 import uuid
-
+from streamlit_js_eval import streamlit_js_eval
 # Streamlit App Title
 st.title("News Chatbot")
 
@@ -20,41 +20,32 @@ if "session_id" not in st.session_state:
 
 session_id = st.session_state["session_id"]
 
-import streamlit as st
-import os
-
 EMAIL_FILE = "emails.txt"
 
-def is_email_in_file(email):
-    """Check if the email already exists in the file."""
-    if not os.path.exists(EMAIL_FILE):
-        return False
-    with open(EMAIL_FILE, "r") as f:
-        emails = f.read().splitlines()
-    return email in emails
-
 def save_email(email):
-    """Save the email to the file."""
     with open(EMAIL_FILE, "a") as f:
         f.write(email + "\n")
 
-# Only ask for email if not already captured
-if "email_verified" not in st.session_state:
-    st.session_state.email_verified = False
+# Get user ID (unique per browser, stored in local storage)
+user_id = streamlit_js_eval(js_expressions="window.localStorage.getItem('user_id')", key="get_user_id")
 
-if not st.session_state.email_verified:
-    st.title("🔐 Please enter your email to start chatting")
-    email = st.text_input("Enter your email:")
+if not user_id:
+    # Ask for email only if user_id not found
+    email = st.text_input("Enter your email to continue:")
 
-    if email and "@" in email and "." in email:
-        if is_email_in_file(email):
-            st.success("✅ Welcome back! You're ready to chat.")
-        else:
-            save_email(email)
-            st.success("✅ Thanks for signing up! You're ready to chat.")
-        st.session_state.email_verified = True
+    if email and "@" in email:
+        save_email(email)
+        # Store user_id in browser
+        streamlit_js_eval(js_expressions=f"window.localStorage.setItem('user_id', '{email}')", key="set_user_id")
+        st.success("✅ You're all set! Reload to start chatting.")
+        st.stop()
     else:
-        st.stop()  # Don't continue until valid email is provided
+        st.warning("Please enter a valid email to start.")
+        st.stop()
+else:
+    st.success("✅ Welcome back!")
+    # Proceed to chatbot
+
 
 # Function to load stored news data
 def load_news_data():
