@@ -7,6 +7,8 @@ import uuid
 from streamlit_js_eval import streamlit_js_eval
 import sqlite3
 
+DB_FILE = "emails.db"  # SQLite database file
+
 def init_db():
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
