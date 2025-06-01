@@ -75,7 +75,16 @@ if not user_id:
 else:
     st.success("✅ Welcome back!")
     # Proceed to chatbot
+if st.sidebar.checkbox("Show saved emails (admin)"):
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
+    cursor.execute("SELECT email, timestamp FROM emails ORDER BY timestamp DESC")
+    rows = cursor.fetchall()
+    conn.close()
 
+    st.sidebar.write("### Saved Emails")
+    for email, timestamp in rows:
+        st.sidebar.write(f"{email} (saved on {timestamp})")
 
 # Function to load stored news data
 def load_news_data():
@@ -130,17 +139,6 @@ def extract_links(response_text):
     st.session_state["news_links"] = links
     news_data[session_id]["news_links"] = links
     save_news_data(news_data)
-
-if st.sidebar.checkbox("Show saved emails (admin)"):
-    conn = sqlite3.connect(DB_FILE)
-    cursor = conn.cursor()
-    cursor.execute("SELECT email, timestamp FROM emails ORDER BY timestamp DESC")
-    rows = cursor.fetchall()
-    conn.close()
-
-    st.sidebar.write("### Saved Emails")
-    for email, timestamp in rows:
-        st.sidebar.write(f"{email} (saved on {timestamp})")
         
 # Fetch News Button
 if st.button("Fetch latest news"):
