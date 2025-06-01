@@ -5,9 +5,23 @@ from google import genai
 import os
 import uuid
 from streamlit_js_eval import streamlit_js_eval
+import sqlite3
+
+def init_db():
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS emails (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            email TEXT UNIQUE NOT NULL,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    conn.commit()
+    conn.close()
 # Streamlit App Title
 st.title("News Chatbot")
-
+init_db()
 # API Keys
 SCRAPINGBEE_API_KEY = "U3URPLPZWZ3QHVGEEP5HTXJ95873G9L58RJ3EHS4WSYTXOZAIE71L278CF589042BBMKNXZTRY23VYPF"
 GENAI_API_KEY = "AIzaSyDFbnYmLQ1Q55jIYYmgQ83sxledB_MgTbw"
@@ -22,9 +36,24 @@ session_id = st.session_state["session_id"]
 
 EMAIL_FILE = "emails.txt"
 
+
+DB_FILE = "emails.db"  # SQLite database file
+
 def save_email(email):
+    # Save to text file
     with open(EMAIL_FILE, "a") as f:
         f.write(email + "\n")
+    
+    # Save to SQLite database
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
+    try:
+        cursor.execute("INSERT OR IGNORE INTO emails (email) VALUES (?)", (email,))
+        conn.commit()
+    except Exception as e:
+        st.error(f"Database error: {e}")
+    finally:
+        conn.close()
 
 # Get user ID (unique per browser, stored in local storage)
 user_id = streamlit_js_eval(js_expressions="window.localStorage.getItem('user_id')", key="get_user_id")
@@ -70,6 +99,7 @@ st.session_state["news_articles"] = news_data[session_id]["news_articles"]
 st.session_state["news_links"] = news_data[session_id]["news_links"]
 st.session_state["chat_history"] = news_data[session_id]["chat_history"]
 
+
 # Function to scrape Bloomberg headlines
 def scrape_bloomberg():
     client = ScrapingBeeClient(api_key=SCRAPINGBEE_API_KEY)
@@ -99,6 +129,17 @@ def extract_links(response_text):
     news_data[session_id]["news_links"] = links
     save_news_data(news_data)
 
+if st.sidebar.checkbox("Show saved emails (admin)"):
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
+    cursor.execute("SELECT email, timestamp FROM emails ORDER BY timestamp DESC")
+    rows = cursor.fetchall()
+    conn.close()
+
+    st.sidebar.write("### Saved Emails")
+    for email, timestamp in rows:
+        st.sidebar.write(f"{email} (saved on {timestamp})")
+        
 # Fetch News Button
 if st.button("Fetch latest news"):
     st.write("🔍 Fetching latest news articles...")
