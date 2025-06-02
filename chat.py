@@ -75,16 +75,21 @@ if not user_id:
 else:
     st.success("✅ Welcome back!")
     # Proceed to chatbot
-if st.sidebar.checkbox("Show saved emails (admin)"):
-    conn = sqlite3.connect(DB_FILE)
-    cursor = conn.cursor()
-    cursor.execute("SELECT email, timestamp FROM emails ORDER BY timestamp DESC")
-    rows = cursor.fetchall()
-    conn.close()
+with st.sidebar.expander("Admin Access"):
+    admin_password = st.text_input("Enter admin password", type="password")
+    if admin_password == "qwmnasfjfuifgf":  # Replace with your actual password
+        if st.checkbox("Show saved emails"):
+            conn = sqlite3.connect(DB_FILE)
+            cursor = conn.cursor()
+            cursor.execute("SELECT email, timestamp FROM emails ORDER BY timestamp DESC")
+            rows = cursor.fetchall()
+            conn.close()
 
-    st.sidebar.write("### Saved Emails")
-    for email, timestamp in rows:
-        st.sidebar.write(f"{email} (saved on {timestamp})")
+            st.write("### Saved Emails")
+            for email, timestamp in rows:
+                st.write(f"{email} (saved on {timestamp})")
+    elif admin_password:
+        st.error("Incorrect password")
 
 # Function to load stored news data
 def load_news_data():
