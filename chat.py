@@ -62,7 +62,7 @@ user_id = streamlit_js_eval(js_expressions="window.localStorage.getItem('user_id
 
 if not user_id:
     # Ask for email only if user_id not found
-    with st.sidebar.expander("Admin Access"):
+    with st.sidebar.expander("Admin Access", expanded=False):
         if "is_admin" not in st.session_state:
             st.session_state["is_admin"] = False
 
