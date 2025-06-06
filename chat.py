@@ -61,30 +61,6 @@ def save_email(email):
 user_id = streamlit_js_eval(js_expressions="window.localStorage.getItem('user_id')", key="get_user_id")
 
 if not user_id:
-    # Ask for email only if user_id not found
-    with st.sidebar.expander("🔐 Admin Panel", expanded=False):
-        if "is_admin" not in st.session_state:
-            st.session_state["is_admin"] = False
-        if not st.session_state["is_admin"]:
-            admin_password = st.text_input("Enter admin password", type="password")
-            if admin_password == "qwmnasfjfuifgf":  # Replace with your actual password
-                st.session_state["is_admin"] = True
-                st.success("Admin access granted.")
-            elif admin_password:
-                st.error("Incorrect password")
-        if st.session_state["is_admin"]:
-            with st.sidebar:
-                st.markdown("### 🛠️ Admin Panel")
-                if st.checkbox("Show saved emails"):
-                    EMAIL_FILE = "emails.txt"
-                    if os.path.exists(EMAIL_FILE):
-                        with open(EMAIL_FILE, "r") as f:
-                            emails = f.readlines()
-                            st.write("### Collected Emails:")
-                            for email in reversed(emails[-50:]):  # Optional: limit for readability
-                                st.write(email.strip())
-                    else:
-                        st.info("No emails have been collected yet.")
     email = st.text_input("Enter your email to continue:")
 # Show admin panel ONLY if user_id is not set (i.e., user hasn't entered their email yet)
     if email and "@" in email:
