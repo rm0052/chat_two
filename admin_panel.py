@@ -2,7 +2,7 @@ import streamlit as st
 import os
 
 # Simple access control
-st.set_page_config(page_title="Admin Panel", layout="centered")
+st.set_page_config(page_title="Admin Panel", layout="centered",expanded=False)
 
 password = st.text_input("Enter Admin Password", type="password")
 
