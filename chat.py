@@ -65,7 +65,6 @@ if not user_id:
     with st.sidebar.expander("🔐 Admin Panel", expanded=False):
         if "is_admin" not in st.session_state:
             st.session_state["is_admin"] = False
-
         if not st.session_state["is_admin"]:
             admin_password = st.text_input("Enter admin password", type="password")
             if admin_password == "qwmnasfjfuifgf":  # Replace with your actual password
@@ -73,18 +72,19 @@ if not user_id:
                 st.success("Admin access granted.")
             elif admin_password:
                 st.error("Incorrect password")
-        else:
-            st.sidebar.write("👋 Admin logged in")
-            if st.sidebar.checkbox("Show saved emails"):
-                conn = sqlite3.connect(DB_FILE)
-                cursor = conn.cursor()
-                cursor.execute("SELECT email, timestamp FROM emails ORDER BY timestamp DESC")
-                rows = cursor.fetchall()
-                conn.close()
-
-                st.sidebar.write("### Saved Emails")
-                for email, timestamp in rows:
-                    st.sidebar.write(f"{email} (saved on {timestamp})")
+        if st.session_state["is_admin"]:
+            with st.sidebar:
+                st.markdown("### 🛠️ Admin Panel")
+                if st.checkbox("Show saved emails"):
+                    EMAIL_FILE = "emails.txt"
+                    if os.path.exists(EMAIL_FILE):
+                        with open(EMAIL_FILE, "r") as f:
+                            emails = f.readlines()
+                            st.write("### Collected Emails:")
+                            for email in reversed(emails[-50:]):  # Optional: limit for readability
+                                st.write(email.strip())
+                    else:
+                        st.info("No emails have been collected yet.")
     email = st.text_input("Enter your email to continue:")
 # Show admin panel ONLY if user_id is not set (i.e., user hasn't entered their email yet)
     if email and "@" in email:
