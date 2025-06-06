@@ -4,7 +4,7 @@ import os
 # Simple access control
 st.set_page_config(page_title="Admin Panel", layout="centered",expanded=False)
 
-password = st.text_input("Enter Admin Password", type="password")
+password = st.text_input("Enter Admin Password", type="password", label_visibility="collapsed", placeholder="Admin password")
 
 if password == os.getenv("ADMIN_PASSWORD", "qwmnasfjfuifgf"):  # Use environment variable or hardcoded
     st.success("Access granted.")
