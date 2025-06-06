@@ -28,5 +28,5 @@ with st.sidebar:
             elif password:
                 st.warning("Incorrect password.")
     else:
-        with st.expander("🔐 Admin Panel", expanded=True):
+        with st.expander("🔐 Admin Panel", expanded=False):
             admin_panel()
