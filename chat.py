@@ -39,7 +39,6 @@ session_id = st.session_state["session_id"]
 EMAIL_FILE = "emails.txt"
 
 
-DB_FILE = "emails.db"  # SQLite database file
 
 def save_email(email):
     # Save to text file
@@ -57,6 +56,33 @@ def save_email(email):
     finally:
         conn.close()
 
+# Secret code required to even see the admin panel
+SECRET_ADMIN_CODE = os.getenv("SECRET_ADMIN_CODE", "letmein")
+
+query_params = st.experimental_get_query_params()
+admin_code = query_params.get("admin", [None])[0]  # e.g., ?admin=letmein
+
+def show_admin_panel():
+    st.title("🔐 Admin Panel")
+
+    if "admin_authenticated" not in st.session_state:
+        st.session_state["admin_authenticated"] = False
+
+    if not st.session_state["admin_authenticated"]:
+        password = st.text_input("Enter Admin Password", type="password")
+        if password == os.getenv("ADMIN_PASSWORD", "supersecure123"):
+            st.session_state["admin_authenticated"] = True
+            st.experimental_rerun()
+        elif password:
+            st.error("Incorrect password.")
+        st.stop()
+
+    st.success("Welcome Admin!")
+    st.write("Here’s the protected content.")
+    # Add more admin logic here
+
+if admin_code == SECRET_ADMIN_CODE:
+    show_admin_panel()
 # Get user ID (unique per browser, stored in local storage)
 user_id = streamlit_js_eval(js_expressions="window.localStorage.getItem('user_id')", key="get_user_id")
 
