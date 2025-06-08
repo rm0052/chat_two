@@ -59,7 +59,7 @@ def save_email(email):
 # Secret code required to even see the admin panel
 SECRET_ADMIN_CODE = os.getenv("SECRET_ADMIN_CODE", "letmein")
 
-query_params = st.experimental_get_query_params()
+query_params = st.query_params
 admin_code = query_params.get("admin", [None])[0]  # e.g., ?admin=letmein
 
 def show_admin_panel():
