@@ -5,25 +5,9 @@ from google import genai
 import os
 import uuid
 from streamlit_js_eval import streamlit_js_eval
-import sqlite3
 
-DB_FILE = "emails.db"  # SQLite database file
-
-def init_db():
-    conn = sqlite3.connect(DB_FILE)
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS emails (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT UNIQUE NOT NULL,
-            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-    conn.commit()
-    conn.close()
 # Streamlit App Title
 st.title("News Chatbot")
-init_db()
 # API Keys
 SCRAPINGBEE_API_KEY = "U3URPLPZWZ3QHVGEEP5HTXJ95873G9L58RJ3EHS4WSYTXOZAIE71L278CF589042BBMKNXZTRY23VYPF"
 GENAI_API_KEY = "AIzaSyDFbnYmLQ1Q55jIYYmgQ83sxledB_MgTbw"
@@ -41,20 +25,17 @@ EMAIL_FILE = "emails.txt"
 
 
 def save_email(email):
-    # Save to text file
-    with open(EMAIL_FILE, "a") as f:
-        f.write(email + "\n")
-    
-    # Save to SQLite database
-    conn = sqlite3.connect(DB_FILE)
-    cursor = conn.cursor()
-    try:
-        cursor.execute("INSERT OR IGNORE INTO emails (email) VALUES (?)", (email,))
-        conn.commit()
-    except Exception as e:
-        st.error(f"Database error: {e}")
-    finally:
-        conn.close()
+    # Read existing emails
+    if os.path.exists(EMAIL_FILE):
+        with open(EMAIL_FILE, "r") as f:
+            saved_emails = set(line.strip().lower() for line in f.readlines())
+    else:
+        saved_emails = set()
+
+    # Save only if new
+    if email.lower() not in saved_emails:
+        with open(EMAIL_FILE, "a") as f:
+            f.write(email + "\n")
 
 # Secret code required to even see the admin panel
 SECRET_ADMIN_CODE = os.getenv("SECRET_ADMIN_CODE", "letmein")
