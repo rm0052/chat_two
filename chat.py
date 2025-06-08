@@ -70,7 +70,7 @@ def show_admin_panel():
 
     if not st.session_state["admin_authenticated"]:
         password = st.text_input("Enter Admin Password", type="password")
-        if password == os.getenv("ADMIN_PASSWORD", "supersecure123"):
+        if password == os.getenv("ADMIN_PASSWORD", "qwmnasfjfuifgf"):
             st.session_state["admin_authenticated"] = True
             st.experimental_rerun()
         elif password:
