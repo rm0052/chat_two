@@ -59,7 +59,7 @@ def save_email(email):
 # Secret code required to even see the admin panel
 SECRET_ADMIN_CODE = os.getenv("SECRET_ADMIN_CODE", "letmein")
 
-query_params = st.experimental_get_query_params()
+query_params = st.query_params()
 admin_code = query_params.get("admin", [None])[0]  # e.g., ?admin=letmein
 
 def show_admin_panel():
@@ -72,7 +72,7 @@ def show_admin_panel():
         password = st.text_input("Enter Admin Password", type="password")
         if password == os.getenv("ADMIN_PASSWORD", "qwmnasfjfuifgf"):
             st.session_state["admin_authenticated"] = True
-            st.experimental_rerun()
+            st.rerun()
         elif password:
             st.error("Incorrect password.")
         st.stop()
