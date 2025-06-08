@@ -80,7 +80,13 @@ def show_admin_panel():
     st.success("Welcome Admin!")
     st.write("Here’s the protected content.")
     # Add more admin logic here
-
+    if os.path.exists(EMAIL_FILE):
+        with open(EMAIL_FILE, "r") as f:
+            emails = f.readlines()
+        for email in reversed(emails[-50:]):
+            st.write(email.strip())
+    else:
+        st.info("No emails collected.")
 if admin_code == SECRET_ADMIN_CODE:
     show_admin_panel()
 # Get user ID (unique per browser, stored in local storage)
