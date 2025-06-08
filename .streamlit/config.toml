@@ -1,0 +1,18 @@
+[theme]
+base = "light"
+
+[server]
+runOnSave = true
+
+[pages]
+hideSidebarNav = false
+
+[[pages]]
+path = "Home.py"
+name = "Chatbot"
+icon = "💬"
+
+[[pages]]
+path = "admin_panel.py"
+name = " "  # blank name hides it from sidebar
+icon = "🔐"
