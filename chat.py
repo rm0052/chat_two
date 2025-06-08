@@ -87,12 +87,12 @@ def show_admin_panel():
             st.write(email.strip())
     else:
         st.info("No emails collected.")
-if admin_code == SECRET_ADMIN_CODE:
-    show_admin_panel()
 # Get user ID (unique per browser, stored in local storage)
 user_id = streamlit_js_eval(js_expressions="window.localStorage.getItem('user_id')", key="get_user_id")
 
 if not user_id:
+    if admin_code == SECRET_ADMIN_CODE:
+        show_admin_panel()
     email = st.text_input("Enter your email to continue:")
 # Show admin panel ONLY if user_id is not set (i.e., user hasn't entered their email yet)
     if email and "@" in email:
