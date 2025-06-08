@@ -8,7 +8,7 @@ runOnSave = true
 hideSidebarNav = false
 
 [[pages]]
-path = "Home.py"
+path = "chat.py"
 name = "Chatbot"
 icon = "💬"
 
