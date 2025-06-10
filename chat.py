@@ -78,7 +78,7 @@ def show_admin_panel():
     st.success("Welcome Admin!")
     st.write("Here’s the protected content.")
     # Add more admin logic here
-    if os.path.exists(EMAIL_FILE):
+    if os.path.exists(EMAIL_LOG):
         with open(EMAIL_LOG, "r") as f:
             emails = f.readlines()
         for email in reversed(emails[-50:]):
