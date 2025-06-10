@@ -120,11 +120,7 @@ else:
                 email_data = json.load(f)
                 if user_id in email_data:
                     info = email_data[user_id]
-                    st.markdown(f"""
-                    **🗓 First Visit**: `{info['first_visit']}`  
-                    **🕒 Last Visit**: `{info['last_visit']}`  
-                    **🔁 Number of Visits**: `{info['num_visits']}`
-                    """)
+                    st.success('''{info['num_visits']}""")
             except json.JSONDecodeError:
                 st.warning("Could not load visit data.")
 
