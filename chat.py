@@ -77,10 +77,22 @@ def show_admin_panel():
     st.write("Here’s the protected content.")
     # Add more admin logic here
     if os.path.exists(EMAIL_LOG):
-        with open(EMAIL_LOG, "r") as f:
-            emails = f.readlines()
-        for email in reversed(emails[-50:]):
-            st.write(email.strip())
+    with open(EMAIL_LOG, "r") as f:
+        try:
+            email_data = json.load(f)
+        except json.JSONDecodeError:
+            st.error("Failed to parse email data.")
+            st.stop()
+
+    st.write("### 📬 Collected Emails")
+    for email, info in sorted(email_data.items(), key=lambda x: x[1]["last_visit"], reverse=True):
+        st.markdown(f"""
+        **Email**: {email}  
+        • First Visit: `{info['first_visit']}`  
+        • Last Visit: `{info['last_visit']}`  
+        • Number of Visits: `{info['num_visits']}`  
+        ---
+        """)
     else:
         st.info("No emails collected.")
 # Get user ID (unique per browser, stored in local storage)
