@@ -20,8 +20,6 @@ if "session_id" not in st.session_state:
 
 session_id = st.session_state["session_id"]
 
-EMAIL_FILE = "emails.txt"
-
 
 
 EMAIL_LOG = "emails.json"
