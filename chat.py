@@ -24,18 +24,36 @@ EMAIL_FILE = "emails.txt"
 
 
 
-def save_email(email):
-    # Read existing emails
-    if os.path.exists(EMAIL_FILE):
-        with open(EMAIL_FILE, "r") as f:
-            saved_emails = set(line.strip().lower() for line in f.readlines())
-    else:
-        saved_emails = set()
+EMAIL_LOG = "emails.json"
 
-    # Save only if new
-    if email.lower() not in saved_emails:
-        with open(EMAIL_FILE, "a") as f:
-            f.write(email + "\n")
+def save_email(email):
+    email = email.strip().lower()
+    now = datetime.utcnow().isoformat()
+
+    # Load existing data
+    if os.path.exists(EMAIL_LOG):
+        with open(EMAIL_LOG, "r") as f:
+            try:
+                email_data = json.load(f)
+            except json.JSONDecodeError:
+                email_data = {}
+    else:
+        email_data = {}
+
+    # Update visit info
+    if email in email_data:
+        email_data[email]["last_visit"] = now
+        email_data[email]["num_visits"] += 1
+    else:
+        email_data[email] = {
+            "first_visit": now,
+            "last_visit": now,
+            "num_visits": 1
+        }
+
+    # Save back to file
+    with open(EMAIL_LOG, "w") as f:
+        json.dump(email_data, f, indent=2)
 
 # Secret code required to even see the admin panel
 SECRET_ADMIN_CODE = os.getenv("SECRET_ADMIN_CODE", "letmein")
