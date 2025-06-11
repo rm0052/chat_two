@@ -83,12 +83,12 @@ def show_admin_panel():
     st.write("Here’s the protected content.")
     # Add more admin logic here
     if os.path.exists(EMAIL_LOG):
-    with open(EMAIL_LOG, "r") as f:
-        try:
-            email_data = json.load(f)
-        except json.JSONDecodeError:
-            st.error("Failed to parse email data.")
-            st.stop()
+        with open(EMAIL_LOG, "r") as f:
+            try:
+                email_data = json.load(f)
+            except json.JSONDecodeError:
+                st.error("Failed to parse email data.")
+                st.stop()
 
     st.write("### 📬 Collected Emails")
     for email, info in sorted(email_data.items(), key=lambda x: x[1]["last_visit"], reverse=True):
