@@ -118,8 +118,8 @@ else:
         with open(EMAIL_LOG, "r") as f:
             try:
                 email_data = json.load(f)
-                if user_id in email_data:
-                    info = email_data[user_id]
+                if email in email_data:
+                    info = email_data[email]
                     st.success('''{info['num_visits']}""")
             except json.JSONDecodeError:
                 st.warning("Could not load visit data.")
