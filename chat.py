@@ -90,7 +90,8 @@ def show_admin_panel():
                 st.error("Failed to parse email data.")
                 st.stop()
 
-    st.write("### 📬 Collected Emails")
+    #st.write("### 📬 Collected Emails")
+    st.write("### Collected Emails")
     for email, info in sorted(email_data.items(), key=lambda x: x[1]["last_visit"], reverse=True):
         st.markdown(f"""
         **Email**: {email}  
