@@ -38,17 +38,23 @@ def save_email(email):
     else:
         email_data = {}
 
+    # # Update visit info
+    # if email in email_data:
+    #     email_data[email]["last_visit"] = now
+    #     email_data[email]["num_visits"] += 1
+    # else:
+    #     email_data[email] = {
+    #         "first_visit": now,
+    #         "last_visit": now,
+    #         "num_visits": 1
+    #     }
     # Update visit info
     if email in email_data:
-        email_data[email]["last_visit"] = now
         email_data[email]["num_visits"] += 1
     else:
         email_data[email] = {
-            "first_visit": now,
-            "last_visit": now,
             "num_visits": 1
         }
-
     # Save back to file
     with open(EMAIL_LOG, "w") as f:
         json.dump(email_data, f, indent=2)
