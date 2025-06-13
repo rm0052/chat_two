@@ -127,7 +127,7 @@ else:
                 email_data = json.load(f)
                 if email in email_data:
                     info = email_data[email]
-                    st.success('''{info['num_visits']}""")
+                    st.success(f"Number of visits: {info['num_visits']}")
             except json.JSONDecodeError:
                 st.warning("Could not load visit data.")
 
