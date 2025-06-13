@@ -5,7 +5,7 @@ from google import genai
 import os
 import uuid
 from streamlit_js_eval import streamlit_js_eval
-import datetime
+from datetime import datetime
 # Streamlit App Title
 st.title("News Chatbot")
 # API Keys
