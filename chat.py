@@ -111,7 +111,7 @@ else:
         with open(EMAIL_LOG, "r") as f:
             try:
                 email_data = json.load(f)
-                if email in email_data:
+                if user_id in email_data:
                     info = email_data[email]
                     st.success(f"Number of visits: {info['num_visits']}")
             except json.JSONDecodeError:
