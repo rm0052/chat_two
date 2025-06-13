@@ -81,8 +81,7 @@ def show_admin_panel():
 
     st.success("Welcome Admin!")
     st.write("Here’s the protected content.")
-
-    # Display collected email data
+    # Add more admin logic here
     if os.path.exists(EMAIL_LOG):
         with open(EMAIL_LOG, "r") as f:
             try:
@@ -91,8 +90,16 @@ def show_admin_panel():
                 st.error("Failed to parse email data.")
                 st.stop()
 
-        st.write("📬 **Collected Emails** (JSON Format)")
-        st.json(email_data)  # 👈 Display entire JSON structure
+    #st.write("### 📬 Collected Emails")
+    st.write("Collected Emails")
+    for email, info in sorted(email_data.items(), key=lambda x: x[1]["last_visit"], reverse=True):
+        st.markdown(f"""
+        **Email**: {email}  
+        • First Visit: `{info['first_visit']}`  
+        • Last Visit: `{info['last_visit']}`  
+        • Number of Visits: `{info['num_visits']}`  
+        ---
+        """)
     else:
         st.info("No emails collected.")
 # Get user ID (unique per browser, stored in local storage)
@@ -218,7 +225,8 @@ if question:
             # final_prompt = f"Respond with the article text of the link that the question is referring to. Question: {question} links: {links}"
             final_prompt = f"Each link represents a news article. Respond with the summary of the article text of the link that the question is referring to. Question: {question} links: {links}"
         else:
-            final_prompt = '''Here are the links of news articles that have been published in the past few hours. Each article has a headline, the date/time it was published, and the article itself. The date appears right after the headline in the format 'day, date at time'. Use current time and date, for example, today is February 20th at 11:07 AM. Question: {} Respond with the links that are useful: {}'''.format(question, links)
+            final_prompt = f'''Here are the links of news articles that have been published in the past few hours. Each article has a headline, the date/time it was published, and the article itself. The date appears right after the headline in the format 'day, date at time'. Use current time and date, for example, today is February 20th at 11:07 AM. Question: {question} Respond with the links that are useful: {links}'''
+
         # Generate response with Gemini
         final_response = client.models.generate_content(
             model="gemini-2.0-flash", contents=final_prompt
