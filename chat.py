@@ -113,7 +113,7 @@ else:
             except json.JSONDecodeError:
                 st.warning("Could not load visit data.")
     if user_id in email_data:
-        email_data[user_id]["num_visits"] += 1
+        save_email(user_id)
 
     # Proceed to chatbot
 
