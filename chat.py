@@ -112,7 +112,7 @@ else:
                 email_data = json.load(f)
             except json.JSONDecodeError:
                 st.warning("Could not load visit data.")
-    streamlit_js_eval(js_expressions="window.localStorage.getItem('user_id')", key="get_user_id")
+    # streamlit_js_eval(js_expressions="window.localStorage.getItem('user_id')", key="get_user_id")
 # Retrieve it from session_state after execution
     user_email = st.session_state.get("get_user_id")
     if user_email in email_data:
