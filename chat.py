@@ -191,6 +191,7 @@ for q, r in st.session_state["chat_history"]:
 
 # User Input: Question
 question = st.chat_input("Type your question and press Enter...")
+st.write("Questions? Email hello@stockdoc.biz.")
 
 # Get Answer Button
 if question:
