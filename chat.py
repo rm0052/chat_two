@@ -5,7 +5,8 @@ from google import genai
 import os
 import uuid
 from streamlit_js_eval import streamlit_js_eval
-from datetime import datetime
+from supabase import create_client, Client
+from datetime import datetime, timedelta, timezone
 # Streamlit App Title
 st.title("News Chatbot")
 # API Keys
@@ -26,7 +27,7 @@ EMAIL_LOG = "emails.json"
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-supabase=create_client(SUPABASE_URL, SUPABASE_KEY)
+supabase: Client=create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def save_email(email):
     email = email.strip().lower()
