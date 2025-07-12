@@ -7,6 +7,8 @@ import uuid
 from streamlit_js_eval import streamlit_js_eval
 from supabase import create_client, Client
 from datetime import datetime, timedelta, timezone
+from dotenv import load_dotenv
+load_dotenv()
 # Streamlit App Title
 st.title("News Chatbot")
 # API Keys
