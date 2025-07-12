@@ -26,7 +26,7 @@ EMAIL_LOG = "emails.json"
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+supabase: Client=create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def save_email(email):
     email = email.strip().lower()
