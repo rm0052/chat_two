@@ -1,3 +1,4 @@
 scrapingbee
 google-genai
 streamlit-js-eval
+supabase
