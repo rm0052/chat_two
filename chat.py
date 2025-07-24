@@ -96,13 +96,6 @@ else:
             save_email(user_email)
     except Exception as e:
         st.warning(f"Could not load visit data from Supabase: {e}")
-    # streamlit_js_eval(js_expressions="window.localStorage.getItem('user_id')", key="get_user_id")
-# Retrieve it from session_state after execution
-    user_email = st.session_state.get("get_user_id")
-    if user_email in email_data:
-        save_email(user_email)
-
-    # Proceed to chatbot
 
 # Function to load stored news data
 def load_news_data():
