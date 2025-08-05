@@ -7,6 +7,9 @@ import uuid
 from streamlit_js_eval import streamlit_js_eval
 from supabase import create_client, Client
 from datetime import datetime, timedelta, timezone
+import requests
+from bs4 import BeautifulSoup
+
 # Streamlit App Title
 st.title("News Chatbot")
 # API Keys
@@ -121,23 +124,38 @@ st.session_state["news_articles"] = news_data[session_id]["news_articles"]
 st.session_state["news_links"] = news_data[session_id]["news_links"]
 st.session_state["chat_history"] = news_data[session_id]["chat_history"]
 
+import requests
+from bs4 import BeautifulSoup
 
-# Function to scrape Bloomberg headlines
+URL = "https://finance.yahoo.com/topic/latest-news/"
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0 Safari/537.36"
+}
+
 def scrape_bloomberg():
-    client = ScrapingBeeClient(api_key=SCRAPINGBEE_API_KEY)
-    urls = ["https://finance.yahoo.com/topic/latest-news/"]
-    articles = ""
+    response = requests.get(URL, headers=HEADERS)
+    if response.status_code != 200:
+        print(f"Failed to fetch page. Status code: {response.status_code}")
+        return []
 
-    for url in urls:
-        response = client.get(
-            url,
-            params={"ai_query": "Extract all article headlines and their links — show links as absolute urls"},
-        )
-        articles += " " + response.text  # Store raw response
+    soup = BeautifulSoup(response.text, "html.parser")
+    articles = []
+
+    for item in soup.select("li.js-stream-content"):
+        headline_tag = item.find("h3")
+        link_tag = item.find("a")
+
+        if headline_tag and link_tag:
+            title = headline_tag.text.strip()
+            link = "https://finance.yahoo.com" + link_tag['href']
+            articles.append({"title": title, "url": link})
 
     st.session_state["news_articles"] = articles
     news_data[session_id]["news_articles"] = articles
     save_news_data(news_data)
+# Example usage
+
+# Function to scrape Bloomberg headlines
 
 # Function to extract article links using Gemini
 def extract_links(response_text):
