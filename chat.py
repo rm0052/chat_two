@@ -124,32 +124,17 @@ st.session_state["news_articles"] = news_data[session_id]["news_articles"]
 st.session_state["news_links"] = news_data[session_id]["news_links"]
 st.session_state["chat_history"] = news_data[session_id]["chat_history"]
 
-import requests
-from bs4 import BeautifulSoup
-
-URL = "https://finance.yahoo.com/topic/latest-news/"
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0 Safari/537.36"
-}
-
 def scrape_bloomberg():
-    response = requests.get(URL, headers=HEADERS)
-    if response.status_code != 200:
-        print(f"Failed to fetch page. Status code: {response.status_code}")
-        return []
+    client = ScrapingBeeClient(api_key=SCRAPINGBEE_API_KEY)
+    urls = ["https://finance.yahoo.com/topic/latest-news/"]
+    articles = ""
 
-    soup = BeautifulSoup(response.text, "html.parser")
-    articles = []
-
-    for item in soup.select("li.js-stream-content"):
-        headline_tag = item.find("h3")
-        link_tag = item.find("a")
-
-        if headline_tag and link_tag:
-            title = headline_tag.text.strip()
-            link = "https://finance.yahoo.com" + link_tag['href']
-            articles.append({"title": title, "url": link})
-
+    for url in urls:
+        response = client.get(
+            url,
+            params={"ai_query": "Extract all article headlines and their links — show links as absolute urls"},
+        )
+        articles += " " + response.text  # Store raw response
     st.session_state["news_articles"] = articles
     news_data[session_id]["news_articles"] = articles
     save_news_data(news_data)
