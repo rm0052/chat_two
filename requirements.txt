@@ -1,5 +1,5 @@
 scrapingbee
-google-genai
+google-generativeai
 streamlit-js-eval
 supabase
 bs4
