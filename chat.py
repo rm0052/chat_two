@@ -1,7 +1,7 @@
 import streamlit as st
 import json
 from scrapingbee import ScrapingBeeClient
-from google import genai
+import google.generativeai as genai
 import os
 import uuid
 from streamlit_js_eval import streamlit_js_eval
@@ -144,10 +144,20 @@ def scrape_bloomberg():
 
 # Function to extract article links using Gemini
 def extract_links(response_text):
-    client = genai.Client(api_key=GENAI_API_KEY)
+    model = genai.GenerativeModel(
+        model_name="gemini-2.0-flash",
+        safety_settings={
+            "HARASSMENT": "BLOCK_NONE",
+            "HATE": "BLOCK_NONE",
+        },
+        generation_config={
+            "temperature": 0.7,
+            "max_output_tokens": 1024
+        }
+    )
     prompt = f"Extract the links from the following text: {response_text}"
 
-    response = client.models.generate_content(model="gemini-2.0-flash", contents=prompt)
+    response = model.generate_content(prompt)
     links = response.text.strip().split("\n")[1:-1]  # Remove first & last empty lines
 
     st.session_state["news_links"] = links
