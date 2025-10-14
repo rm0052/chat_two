@@ -145,7 +145,7 @@ def scrape_bloomberg():
 # Function to extract article links using Gemini
 def extract_links(response_text):
     model = genai.GenerativeModel(
-        model_name="gemini-2.0-flash",
+        model_name="gemini-2.0-flash-lite",
         safety_settings={
             "HARASSMENT": "BLOCK_NONE",
             "HATE": "BLOCK_NONE",
