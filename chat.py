@@ -134,7 +134,7 @@ def scrape_bloomberg():
             url,
             params={"ai_query": "Extract all article headlines and their links — show links as absolute urls"},
         )
-        articles += " " + response.text  # Store raw response
+        articles += " " + response.text[:100]  # Store raw response
     st.session_state["news_articles"] = articles
     news_data[session_id]["news_articles"] = articles
     save_news_data(news_data)
