@@ -204,7 +204,7 @@ if question:
 
         # Generate response with Gemini
         final_response = client.models.generate_content(
-            model="gemini-2.0-flash", contents=final_prompt
+            model="gemini-2.0-flash-lite", contents=final_prompt
         )
 
         # Update session state and save chat history
