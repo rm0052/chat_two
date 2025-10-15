@@ -146,10 +146,10 @@ def scrape_bloomberg():
 def extract_links(response_text):
     model = genai.GenerativeModel(
         model_name="gemini-2.0-flash-lite",
-        safety_settings={
+        safety_settings=[{
             "HARASSMENT": "BLOCK_NONE",
             "HATE": "BLOCK_NONE",
-        },
+        }],
         generation_config={
             "temperature": 0.7,
             "max_output_tokens": 1024
