@@ -125,7 +125,7 @@ st.session_state["news_links"] = news_data[session_id]["news_links"]
 st.session_state["chat_history"] = news_data[session_id]["chat_history"]
 
 def scrape_bloomberg():
-    client = ScrapingBeeClient(api_key=SCRAPINGBEE_API_KEY,light_requests=True)
+    client = ScrapingBeeClient(api_key=SCRAPINGBEE_API_KEY)
     urls = ["https://finance.yahoo.com/topic/latest-news/"]
     articles = ""
 
