@@ -191,7 +191,7 @@ if question:
         client = genai.Client(api_key=GENAI_API_KEY)
         prompt = f"Answer only yes or no if the question requires specific information from the articles links. Question: {question} links: {links}."
         response = client.models.generate_content(
-            model="gemini-2.0-flash", contents=prompt
+            model="gemini-2.0-flash-lite", contents=prompt
         )
         answer = response.text.strip()
 
