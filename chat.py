@@ -125,7 +125,7 @@ st.session_state["news_links"] = news_data[session_id]["news_links"]
 st.session_state["chat_history"] = news_data[session_id]["chat_history"]
 
 def scrape_bloomberg():
-    client = ScrapingBeeClient(api_key=SCRAPINGBEE_API_KEY,light_requests=true)
+    client = ScrapingBeeClient(api_key=SCRAPINGBEE_API_KEY,light_requests=True)
     urls = ["https://finance.yahoo.com/topic/latest-news/"]
     articles = ""
 
@@ -134,7 +134,7 @@ def scrape_bloomberg():
             url,
             params={"ai_query": "Extract all article headlines and their links — show links as absolute urls"},
         )
-        articles += " " + response.text[:100]  # Store raw response
+        articles += " " + response.text[:500]  # Store raw response
     st.session_state["news_articles"] = articles
     news_data[session_id]["news_articles"] = articles
     save_news_data(news_data)
