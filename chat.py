@@ -185,6 +185,7 @@ if question:
         prompt = f"Answer only yes or no if the question requires specific information from the articles links. Question: {question} links: {links}."
         genai.configure(api_key=GENAI_API_KEY) 
         model = genai.GenerativeModel("gemini-2.0-flash-lite")
+        response=model.generate_content(prompt)
         answer = response.text.strip()
 
         # Follow-up Question
@@ -195,8 +196,8 @@ if question:
             final_prompt = f'''Here are the links of news articles that have been published in the past few hours. Each article has a headline, the date/time it was published, and the article itself. The date appears right after the headline in the format 'day, date at time'. Use current time and date, for example, today is February 20th at 11:07 AM. Question: {question} Respond with the links that are useful: {links}'''
 
         # Generate response with Gemini
-        final_response = model = genai.GenerativeModel("gemini-2.0-flash-lite")
-
+        model = genai.GenerativeModel("gemini-2.0-flash-lite")
+        final_response=model.generate_content(final_prompt)
         # Update session state and save chat history
         st.session_state["chat_history"].append((question, final_response.text.replace("$", "\\$").replace("provided text", "available information")))
         news_data[session_id]["chat_history"] = st.session_state["chat_history"]
