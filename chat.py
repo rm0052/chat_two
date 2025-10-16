@@ -182,11 +182,9 @@ if question:
         st.write("🔗 Fetching content from saved news articles...")
 
         links = st.session_state["news_links"]
-        client = genai.Client(api_key=GENAI_API_KEY)
         prompt = f"Answer only yes or no if the question requires specific information from the articles links. Question: {question} links: {links}."
-        response = client.models.generate_content(
-            model="gemini-2.0-flash-lite", contents=prompt
-        )
+        genai.configure(api_key=GENAI_API_KEY) 
+        model = genai.GenerativeModel("gemini-2.0-flash-lite")
         answer = response.text.strip()
 
         # Follow-up Question
@@ -197,9 +195,7 @@ if question:
             final_prompt = f'''Here are the links of news articles that have been published in the past few hours. Each article has a headline, the date/time it was published, and the article itself. The date appears right after the headline in the format 'day, date at time'. Use current time and date, for example, today is February 20th at 11:07 AM. Question: {question} Respond with the links that are useful: {links}'''
 
         # Generate response with Gemini
-        final_response = client.models.generate_content(
-            model="gemini-2.0-flash-lite", contents=final_prompt
-        )
+        final_response = model = genai.GenerativeModel("gemini-2.0-flash-lite")
 
         # Update session state and save chat history
         st.session_state["chat_history"].append((question, final_response.text.replace("$", "\\$").replace("provided text", "available information")))
