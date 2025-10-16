@@ -143,7 +143,7 @@ def scrape_bloomberg():
 # Function to scrape Bloomberg headlines
 
 # Function to extract article links using Gemini
-def extract_links(response_text, GENAI_API_KEY):
+def extract_links(response_text):
     genai.configure(api_key=GENAI_API_KEY) 
     model = genai.GenerativeModel("gemini-2.0-flash-lite")
     prompt = f"Extract the links from the following text: {response_text}"
