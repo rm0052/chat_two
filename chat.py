@@ -158,7 +158,7 @@ def scrape_bloomberg():
 def extract_links(response_text):
     prompt = f"Extract the links from the following text: {response_text}"
     response = groq_generate(prompt)
-    links = response.text.strip().split("\n")[1:-1]  # Remove first & last empty lines
+    links = response.strip().split("\n")[1:-1]  # Remove first & last empty lines
 
     st.session_state["news_links"] = links
     news_data[session_id]["news_links"] = links
