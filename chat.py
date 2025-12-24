@@ -156,11 +156,8 @@ def scrape_bloomberg():
 
 # Function to extract article links using Gemini
 def extract_links(response_text):
-    genai.configure(api_key=GENAI_API_KEY) 
-    model = genai.GenerativeModel("gemini-2.0-flash-lite")
     prompt = f"Extract the links from the following text: {response_text}"
-
-    response = model.generate_content(prompt)
+    response = groq_generate(prompt)
     links = response.text.strip().split("\n")[1:-1]  # Remove first & last empty lines
 
     st.session_state["news_links"] = links
