@@ -203,7 +203,7 @@ if question:
 
         final_response=groq_generate(final_prompt)
         # Update session state and save chat history
-        st.session_state["chat_history"].append((question, final_response.text.replace("$", "\\$").replace("provided text", "available information")))
+        st.session_state["chat_history"].append((question, final_response.replace("$", "\\$").replace("provided text", "available information")))
         news_data[session_id]["chat_history"] = st.session_state["chat_history"]
         save_news_data(news_data)
 
