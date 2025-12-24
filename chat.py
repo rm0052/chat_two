@@ -1,7 +1,7 @@
 import streamlit as st
 import json
 from scrapingbee import ScrapingBeeClient
-import google.generativeai as genai
+from groq import Groq
 import os
 import uuid
 from streamlit_js_eval import streamlit_js_eval
@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup
 st.title("News Chatbot")
 # API Keys
 SCRAPINGBEE_API_KEY = "U3URPLPZWZ3QHVGEEP5HTXJ95873G9L58RJ3EHS4WSYTXOZAIE71L278CF589042BBMKNXZTRY23VYPF"
-GENAI_API_KEY = "AIzaSyAUGzXVbqKi0d6QL2NDkQd64ocfdleEpuE"
+groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 DATA_FILE = "news_data2.json"  # File to store news data
 
@@ -32,6 +32,18 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
+def groq_generate(prompt):
+    completion = groq_client.chat.completions.create(
+        model="llama-3.1-8b-instant",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.3,
+        max_tokens=1024,
+    )
+    return completion.choices[0].message.content
+    
 def save_email(email):
     email = email.strip().lower()
     now = datetime.now(timezone.utc).isoformat()
@@ -183,10 +195,7 @@ if question:
 
         links = st.session_state["news_links"]
         prompt = f"Answer only yes or no if the question requires specific information from the articles links. Question: {question} links: {links}."
-        genai.configure(api_key=GENAI_API_KEY) 
-        model = genai.GenerativeModel("gemini-2.0-flash-lite")
-        response=model.generate_content(prompt)
-        answer = response.text.strip()
+        answer = groq_generate(prompt)
 
         # Follow-up Question
         if answer.lower() == "yes":
@@ -195,9 +204,7 @@ if question:
         else:
             final_prompt = f'''Here are the links of news articles that have been published in the past few hours. Each article has a headline, the date/time it was published, and the article itself. The date appears right after the headline in the format 'day, date at time'. Use current time and date, for example, today is February 20th at 11:07 AM. Question: {question} Respond with the links that are useful: {links}'''
 
-        # Generate response with Gemini
-        model = genai.GenerativeModel("gemini-2.0-flash-lite")
-        final_response=model.generate_content(final_prompt)
+        final_response=groq_generate(final_prompt)
         # Update session state and save chat history
         st.session_state["chat_history"].append((question, final_response.text.replace("$", "\\$").replace("provided text", "available information")))
         news_data[session_id]["chat_history"] = st.session_state["chat_history"]
