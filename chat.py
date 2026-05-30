@@ -12,6 +12,30 @@ from bs4 import BeautifulSoup
 
 # Streamlit App Title
 st.title("News Chatbot")
+st.write('''Latest Market News Chatbot
+
+
+About the chatbot
+
+This chatbot will answer questions related to the latest market news and news of the day. You can use this chatbot at the start of the day to know the news before market hours or at any time during the day. 
+
+You can ask general questions about the news and specific questions on companies or specific scenarios mentioned in the news. Before using the chatbot, you need to “fetch the news” first and then you can ask questions like:
+
+Can you summarize the news by company?
+Can you summarize the news links by company?
+Can you categorize the news by sentiment?
+Can you provide details on [company-name]?
+Can you provide the news links on [company-name]?
+Can you provide the news links on [company-name]?
+Why did [company-name] stock go down/up?
+
+
+
+
+
+
+'''
+        )
 # API Keys
 SCRAPINGBEE_API_KEY = "U3URPLPZWZ3QHVGEEP5HTXJ95873G9L58RJ3EHS4WSYTXOZAIE71L278CF589042BBMKNXZTRY23VYPF"
 groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
