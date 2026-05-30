@@ -22,11 +22,17 @@ This chatbot will answer questions related to the latest market news and news of
 You can ask general questions about the news and specific questions on companies or specific scenarios mentioned in the news. Before using the chatbot, you need to “fetch the news” first and then you can ask questions like:
 
 Can you summarize the news by company?
+
 Can you summarize the news links by company?
+
 Can you categorize the news by sentiment?
+
 Can you provide details on [company-name]?
+
 Can you provide the news links on [company-name]?
+
 Can you provide the news links on [company-name]?
+
 Why did [company-name] stock go down/up?
 
 
